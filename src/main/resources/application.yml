@@ -1,0 +1,16 @@
+maytapi:
+  base-url: https://api.maytapi.com/api
+  # product-id: bfe01996-5067-4813-9c60-e00b92927f40 ## legendbibhu
+  # phone-id: 115873 ## legendbibhu
+  # api-token: c042eb62-e607-4ca9-85dc-5b2bf53e4107 ## legendbibhu
+
+  product-id: eebb4b08-c90e-4c94-93a7-dd2f6832f13f
+  phone-id: 116155
+  api-token: d89cf905-7211-4dd7-86ab-0ad468183973
+
+server:
+  port: 8080
+
+logging:
+  level:
+    com.example.maytapi: DEBUG

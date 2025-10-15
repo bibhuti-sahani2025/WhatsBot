@@ -1,0 +1,71 @@
+<div class="whatsapp-tester-container">
+  <h2>WhatsApp Tester</h2>
+  <form (submit)="onSubmit($event)">
+    <div class="recipient-section">
+      <label>Recipient Type:</label>
+      <select [(ngModel)]="recipientType" name="recipientType">
+        <option value="individual">Individual</option>
+        <option value="group">Group</option>
+      </select>
+      <input type="text" [(ngModel)]="phoneOrGroupId" name="phoneOrGroupId" placeholder="Phone number or Group ID" />
+    </div>
+    <div class="message-type-section">
+      <label>Message Type:</label>
+      <select [(ngModel)]="messageType" name="messageType">
+        <option value="text">Text</option>
+        <option value="image">Image</option>
+        <option value="audio">Audio</option>
+        <option value="location">Location</option>
+        <option value="vcard">vCard</option>
+        <option value="call">Call</option>
+      </select>
+    </div>
+    <div class="message-content-section">
+      <!-- Dynamic fields for each message type will go here -->
+      <ng-container [ngSwitch]="messageType">
+        <input *ngSwitchCase="'text'" type="text" [(ngModel)]="messageContent" name="messageContent" placeholder="Message..." />
+        <ng-container *ngSwitchCase="'image'">
+          <input type="file" accept="image/*" capture="environment" (change)="onImageFileChange($event)" />
+          <div *ngIf="uploading">Uploading image...</div>
+          <div *ngIf="uploadError" style="color:red">{{ uploadError }}</div>
+          <div *ngIf="mediaUrl">
+            <img [src]="mediaUrl" alt="Preview" style="max-width: 100%; margin: 8px 0;" />
+          </div>
+          <input type="text" [(ngModel)]="mediaUrl" name="mediaUrl" placeholder="Image URL..." />
+          <input type="text" [(ngModel)]="caption" name="caption" placeholder="Caption (optional)" />
+        </ng-container>
+        <ng-container *ngSwitchCase="'document'">
+          <input type="text" [(ngModel)]="mediaUrl" name="mediaUrl" placeholder="Document URL..." />
+          <input type="text" [(ngModel)]="caption" name="caption" placeholder="Caption (optional)" />
+        </ng-container>
+        <ng-container *ngSwitchCase="'audio'">
+          <input type="file" accept="audio/*" capture="environment" (change)="onAudioFileChange($event)" />
+          <div *ngIf="uploading">Uploading audio...</div>
+          <div *ngIf="uploadError" style="color:red">{{ uploadError }}</div>
+          <div *ngIf="mediaUrl">
+            <audio controls style="width: 100%; margin: 8px 0;">
+              <source [src]="mediaUrl" />
+            </audio>
+          </div>
+          <input type="text" [(ngModel)]="mediaUrl" name="mediaUrl" placeholder="Audio URL..." />
+          <input type="text" [(ngModel)]="caption" name="caption" placeholder="Caption (optional)" />
+        </ng-container>
+        <ng-container *ngSwitchCase="'location'">
+          <input type="text" [(ngModel)]="latitude" name="latitude" placeholder="Latitude (e.g., 41.093292)" />
+          <input type="text" [(ngModel)]="longitude" name="longitude" placeholder="Longitude (e.g., 29.061737)" />
+          <input type="text" [(ngModel)]="address" name="address" placeholder="Address/Place name (optional)" />
+          <button type="button" (click)="getCurrentLocation()" [disabled]="gettingLocation">
+            {{ gettingLocation ? 'Getting location...' : 'Use My Current Location' }}
+          </button>
+          <div *ngIf="locationError" style="color:red">{{ locationError }}</div>
+        </ng-container>
+        <!-- TODO: Add fields for vCard, call -->
+      </ng-container>
+    </div>
+    <button type="submit" [disabled]="sending">{{ sending ? 'Sending...' : 'Send' }}</button>
+  </form>
+  <div class="history-section">
+    <h3>Response</h3>
+    <pre *ngIf="response">{{ response | json }}</pre>
+  </div>
+</div>
